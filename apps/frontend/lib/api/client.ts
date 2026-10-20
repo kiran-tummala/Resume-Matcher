@@ -87,6 +87,18 @@ async function bufferResponse(response: Response): Promise<Response> {
  * @param options - Standard RequestInit options
  * @param timeoutMs - Optional request timeout in milliseconds (default: DEFAULT_TIMEOUT_MS, from NEXT_PUBLIC_REQUEST_TIMEOUT_MS, 240_000 if unset)
  */
+/**
+ * With hosted sign-in on, an expired session makes the gate answer 401 with
+ * `WWW-Authenticate: Bearer`; send the browser to the login page and back.
+ */
+function redirectToLoginOnExpiredSession(response: Response): void {
+  if (typeof window === 'undefined' || response.status !== 401) return;
+  if (!(response.headers.get('www-authenticate') ?? '').startsWith('Bearer')) return;
+  if (window.location.pathname === '/login') return;
+  const next = `${window.location.pathname}${window.location.search}`;
+  window.location.assign(`/login?next=${encodeURIComponent(next)}`);
+}
+
 export async function apiFetch(
   endpoint: string,
   options?: RequestInit,
@@ -143,7 +155,9 @@ export async function apiFetch(
 
   try {
     const request = fetch(url, { ...options, signal: controller.signal }).then(bufferResponse);
-    return await Promise.race([request, cancellation]);
+    const response = await Promise.race([request, cancellation]);
+    redirectToLoginOnExpiredSession(response);
+    return response;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       if (callerSignal?.aborted) {

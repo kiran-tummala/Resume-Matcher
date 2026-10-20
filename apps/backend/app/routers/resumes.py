@@ -147,9 +147,14 @@ async def _auto_create_tracker_application(
     """Best-effort: drop an ``applied`` card on the tracker after a tailoring.
 
     Company/role come from the cached job (zero extra LLM call). Wrapped so a
-    tracker failure can never break the tailoring flow.
+    tracker failure can never break the tailoring flow. Bench consultant
+    tailorings are tracked as bench submissions instead, so they are skipped.
     """
     try:
+        from app.bench.service import is_bench_resume_id
+
+        if await is_bench_resume_id(master_resume_id):
+            return
         if title is None:
             saved_resume = await db.get_resume(tailored_resume_id)
             title = (saved_resume or {}).get("title")
@@ -325,7 +330,16 @@ def _get_original_resume_data(resume: dict[str, Any]) -> dict[str, Any] | None:
 
 
 async def _grounding_master_data(resume: dict[str, Any]) -> dict[str, Any] | None:
-    """Truth source for refinement: the source master, its parent master, else the default."""
+    """Truth source for refinement: the source master, its parent master, else the default.
+
+    A bench consultant's resume (or a tailored copy of it) is grounded in that
+    consultant's own resume, never in the default master, which is someone else.
+    """
+    from app.bench.service import bench_root_resume
+
+    bench_root = await bench_root_resume(resume)
+    if bench_root is not None:
+        return _get_original_resume_data(bench_root)
     if resume.get("is_master", False):
         return _get_original_resume_data(resume)
     parent_id = resume.get("parent_id")
@@ -1246,6 +1260,17 @@ async def list_resumes(include_master: bool = Query(False)) -> ResumeListRespons
     resumes = await db.list_resumes()
     if not include_master:
         resumes = [resume for resume in resumes if not resume.get("is_master", False)]
+    # Consultant resumes and their tailored copies live on the bench pages.
+    from app.bench.service import store as bench_store
+
+    bench_ids = await bench_store().bench_resume_ids()
+    if bench_ids:
+        resumes = [
+            resume
+            for resume in resumes
+            if resume["resume_id"] not in bench_ids
+            and resume.get("parent_id") not in bench_ids
+        ]
 
     resumes.sort(key=lambda item: item.get("updated_at", ""), reverse=True)
 

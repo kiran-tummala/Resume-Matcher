@@ -437,6 +437,29 @@ async def _render_page_to_pdf(
     )
 
 
+async def _authorize_print_requests(page: Page, url: str) -> None:
+    """Let the print page through the sign-in gate when auth is on.
+
+    Adds ``X-Internal-Render`` only to requests for the print page's own
+    origin, so the secret never reaches a third-party host.
+    """
+    from urllib.parse import urlsplit
+
+    from app.auth import RENDER_HEADER
+
+    secret = os.environ.get("INTERNAL_RENDER_SECRET", "").strip()
+    if not secret or os.environ.get("AUTH_PROVIDER", "").strip().lower() != "supabase":
+        return
+    parts = urlsplit(url)
+    origin = f"{parts.scheme}://{parts.netloc}"
+
+    async def add_header(route: Any) -> None:
+        headers = {**route.request.headers, RENDER_HEADER: secret}
+        await route.continue_(headers=headers)
+
+    await page.route(f"{origin}/**", add_header)
+
+
 async def _render_with_browser(
     browser: Browser,
     url: str,
@@ -454,6 +477,7 @@ async def _render_with_browser(
     )
     render_error: BaseException | None = None
     try:
+        await _authorize_print_requests(page, url)
         return await _render_page_to_pdf(
             page,
             url,

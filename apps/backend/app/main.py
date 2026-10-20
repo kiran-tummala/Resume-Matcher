@@ -18,6 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
 from app.ai_budget import operation_error_content
+from app.auth import AuthMiddleware, AuthSettings, describe
+from app.bench.router import router as bench_router
 from app.config import settings
 from app.database import DatabaseBusyError, db
 from app.host_guard import HostGuardMiddleware
@@ -126,6 +128,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Hosted deployments sign in with Supabase; off (no-op) for local use.
+auth_settings = AuthSettings.from_env()
+auth_settings.validate()
+logger.info("Auth: %s", describe(auth_settings))
+app.add_middleware(AuthMiddleware, auth=auth_settings)
 # Added last so it runs first: reject requests for hosts this app does not serve.
 app.add_middleware(HostGuardMiddleware, allowed_hosts=settings.effective_allowed_hosts)
 
@@ -139,6 +146,7 @@ app.include_router(applications_router, prefix="/api/v1")
 app.include_router(resume_wizard_router, prefix="/api/v1")
 app.include_router(ats_router, prefix="/api/v1")
 app.include_router(chatgpt_router, prefix="/api/v1")
+app.include_router(bench_router, prefix="/api/v1")
 # OpenAI redirects to 127.0.0.1:<port>/auth/callback; the path is fixed.
 app.include_router(chatgpt_callback_router)
 
