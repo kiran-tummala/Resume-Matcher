@@ -14,6 +14,8 @@ from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlalchemy.schema import CreateColumn
 
+# Register the bench tables on Base before create_all runs.
+import app.bench.models  # noqa: E402,F401
 from app.models import Base, Improvement, Resume
 
 __all__ = [

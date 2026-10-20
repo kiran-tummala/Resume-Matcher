@@ -12,6 +12,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.schema import CreateIndex
 
 from app import database as database_module
+from app.bench.store import BenchStore
 from app.config import Settings
 from app.database import (
     Database,
@@ -212,6 +213,15 @@ async def test_copy_rows_copies_every_table_once(tmp_path: Path) -> None:
         )
         source.set_api_key_ciphertext("openai", "ciphertext")
         await source.create_queue_item("q1", resume["resume_id"], "Engineer")
+        bench = BenchStore(source)
+        consultant = await bench.create_consultant(full_name="Bench Consultant")
+        requirement, _ = await bench.upsert_requirement(
+            title="Engineer", description="Engineer"
+        )
+        await bench.create_submission(
+            consultant_id=consultant["consultant_id"],
+            requirement_id=requirement["requirement_id"],
+        )
 
         counts = copy_rows(source, target)
         assert counts == {table.name: 1 for table in Base.metadata.sorted_tables}

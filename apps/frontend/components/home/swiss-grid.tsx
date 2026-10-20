@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ListNumbers, SquaresFour } from '@phosphor-icons/react';
+import { ListNumbers, SquaresFour, UsersThree } from '@phosphor-icons/react';
 import { CommunityLinks } from '@/components/common/community-links';
 import { buttonClass } from '@/components/ui/button';
 import { PageFrame } from '@/components/ui/page-frame';
@@ -56,6 +56,13 @@ export const SwissGrid = ({
           >
             <ListNumbers aria-hidden="true" />
             {t('nav.queue')}
+          </Link>
+          <Link
+            href="/bench"
+            className={buttonClass({ variant: 'outline', className: 'min-w-36' })}
+          >
+            <UsersThree aria-hidden="true" />
+            {t('nav.bench')}
           </Link>
           <Link
             href="/tracker"

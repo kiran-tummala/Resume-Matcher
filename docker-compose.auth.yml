@@ -1,0 +1,14 @@
+# Optional hosted sign-in (Supabase Auth). Combine with the base file, and with
+# the Postgres file if you use it:
+#   docker compose -f docker-compose.yml -f docker-compose.postgres.yml -f docker-compose.auth.yml up
+# Put the values in a .env file next to this one. See BENCH.md.
+services:
+  resume-matcher:
+    environment:
+      - AUTH_PROVIDER=supabase
+      - SUPABASE_URL=${SUPABASE_URL:?set SUPABASE_URL}
+      - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY:?set SUPABASE_PUBLISHABLE_KEY}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET:-}
+      - AUTH_ALLOWED_DOMAINS=${AUTH_ALLOWED_DOMAINS:-}
+      - AUTH_ALLOWED_EMAILS=${AUTH_ALLOWED_EMAILS:-}
+      - INTERNAL_RENDER_SECRET=${INTERNAL_RENDER_SECRET:?set INTERNAL_RENDER_SECRET (openssl rand -hex 32)}

@@ -10,6 +10,7 @@ import {
   DEFAULT_TEMPLATE_SETTINGS,
 } from '@/lib/types/template-settings';
 import { API_BASE } from '@/lib/api/client';
+import { internalRenderHeaders } from '@/lib/auth/render-headers';
 import { translate } from '@/lib/i18n/server';
 import { resolveLocale } from '@/lib/i18n/locale';
 import { withLocalizedDefaultSections } from '@/lib/utils/section-helpers';
@@ -83,7 +84,7 @@ async function fetchResumeData(id: string, draftToken?: string): Promise<ResumeD
     draftToken && /^[a-f0-9]{32}$/.test(draftToken)
       ? `${API_BASE}/resumes/render-drafts/${draftToken}`
       : `${API_BASE}/resumes?resume_id=${encodeURIComponent(id)}`;
-  const res = await fetch(url, { cache: 'no-store' });
+  const res = await fetch(url, { cache: 'no-store', headers: internalRenderHeaders() });
   if (!res.ok) {
     throw new Error(`Failed to load resume (status ${res.status}).`);
   }
