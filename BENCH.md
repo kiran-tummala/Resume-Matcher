@@ -38,6 +38,8 @@ Guards built in:
 
 ## Run it locally
 
+Step-by-step for Mac, Linux and Windows: [RUN-LOCAL.md](RUN-LOCAL.md).
+
 Same as Resume Matcher (`SETUP.md`): backend on :8000, frontend on :3000, an AI
 provider set in **Settings**. Locally there is no sign-in.
 
