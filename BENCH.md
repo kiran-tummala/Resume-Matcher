@@ -10,20 +10,28 @@ produced the same truth-checked way, from that consultant's real resume.
 
 ## The flow
 
-1. **Consultants** → *Add consultant* (name, skills, pay rate, work
-   authorization as they state it), then *Upload resume* (PDF or DOCX). The
-   resume is parsed with your configured AI provider.
+The bench is its own workspace, **BenchPilot**, with a sidebar: Today,
+Requirements, Candidates and Pipeline. Open it from the dashboard footer or
+go to `/bench`.
+
+1. **Candidates** → *Add candidate* (name, skills, pay rate, work
+   authorization as they state it). On their profile, *Upload* a resume (PDF or
+   DOCX). It's read with your configured AI provider.
 2. **Requirements** → *Add requirement*, paste the job description. The same
    requirement sent by a second vendor (same client + req ID, or same client,
    title and location) is recognised and not added twice.
-3. Pick a requirement. **Best matches** ranks the bench by how many of each
-   consultant's listed skills the description mentions. It is free and
-   instant (no AI call), and it is a starting point for your judgement.
-4. *Submit* a consultant: confirm bill and pay rate (margin is shown) and
-   whether you have their **right to represent**. A tailored resume is queued.
-5. **Submissions** shows each one: *Tailoring...* until the resume is ready,
-   then *Review resume*. Edit it in the builder, download the PDF, and move the
-   status along (Submitted → Client review → Interview → Offer → Placed).
+3. Open a requirement. **Best matches on your bench** ranks candidates by how
+   many of their listed skills the description mentions. It's free and instant
+   (no AI call), and a starting point for your judgement.
+4. *Submit* a candidate: confirm bill and pay rate (the rate bar shows the
+   margin) and whether you have their **right to represent**. A tailored resume
+   is queued. You can also submit from a candidate's profile.
+5. **Pipeline** is a board of every submission by stage. Drag a card or use its
+   *Move* menu: Ready to send → Submitted → Client review → Interview → Offer →
+   Placed. Moving a card out to a client asks for right to represent first.
+6. **Today** lists what needs you: resumes ready to send, failed tailoring
+   (with *Try again*), requirements nobody has been put forward for, and
+   candidates missing a resume. It also shows margin in play and placed.
 
 Guards built in:
 
@@ -92,7 +100,7 @@ backend refuses to start rather than run open.
 
 - **One workspace.** Everyone who signs in shares one bench. Separate companies
   need separate deployments until multi-tenant support is added.
-- Bench screens are in English in every UI language.
+- The BenchPilot workspace is English only (the rest of the app keeps its languages).
 - Match ranking is keyword overlap on the skills you enter, not semantic.
 - Tailoring runs one at a time through the queue (rate-limited for your AI
   provider), so a batch of submissions takes a few minutes.
@@ -107,5 +115,5 @@ backend refuses to start rather than run open.
 | API (`/api/v1/bench/...`) | `apps/backend/app/bench/router.py`, `schemas.py` |
 | Sign-in gate (API) | `apps/backend/app/auth.py`, PDF hook in `app/pdf.py` |
 | Sign-in gate (pages) | `apps/frontend/proxy.ts`, `lib/auth/`, `app/login`, `app/logout` |
-| Screens | `apps/frontend/app/(default)/bench`, `components/bench/` |
+| Screens (own design system, `bp-*` colour tokens) | `apps/frontend/app/(workspace)/bench`, `components/workspace/` |
 | Tests | `tests/integration/test_bench_api.py`, `tests/unit/test_auth.py`, `apps/frontend/tests/auth-gate.test.ts` |

@@ -1,12 +1,8 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { SpinnerGap } from '@phosphor-icons/react';
 import { createBrowserClient } from '@supabase/ssr';
-import { Alert } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button, Field, Notice, TextInput } from '@/components/workspace/ui';
 
 interface Props {
   supabaseUrl: string;
@@ -55,10 +51,9 @@ export function LoginForm({ supabaseUrl, supabaseKey, nextPath, denied = false, 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md space-y-4">
-      <div className="space-y-1">
-        <Label htmlFor="login-email">{labels.email}</Label>
-        <Input
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <Field label={labels.email} htmlFor="login-email">
+        <TextInput
           id="login-email"
           type="email"
           autoComplete="email"
@@ -66,10 +61,9 @@ export function LoginForm({ supabaseUrl, supabaseKey, nextPath, denied = false, 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-      </div>
-      <div className="space-y-1">
-        <Label htmlFor="login-password">{labels.password}</Label>
-        <Input
+      </Field>
+      <Field label={labels.password} htmlFor="login-password">
+        <TextInput
           id="login-password"
           type="password"
           autoComplete="current-password"
@@ -77,19 +71,12 @@ export function LoginForm({ supabaseUrl, supabaseKey, nextPath, denied = false, 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-      </div>
-      {error && <Alert tone="error">{error}</Alert>}
-      <Button type="submit" disabled={busy}>
-        {busy ? (
-          <>
-            <SpinnerGap aria-hidden="true" className="animate-spin" />
-            {labels.submitting}
-          </>
-        ) : (
-          labels.submit
-        )}
+      </Field>
+      {error && <Notice tone="error">{error}</Notice>}
+      <Button type="submit" disabled={busy} className="w-full">
+        {busy ? labels.submitting : labels.submit}
       </Button>
-      <p className="text-sm text-ink-soft">{labels.invite}</p>
+      <p className="text-sm text-bp-muted">{labels.invite}</p>
     </form>
   );
 }

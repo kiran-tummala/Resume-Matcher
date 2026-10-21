@@ -31,6 +31,49 @@
   --sw-overlay: rgb(0 0 0 / 0.5); /* dialog backdrop */
 }
 
+/* BenchPilot workspace palette (/bench). A separate, calmer system from the Swiss
+   pages above; contrast checked: every text pairing is 5.3:1 or better. */
+:root {
+  --bp-canvas: #f3f5f4;
+  --bp-surface: #ffffff;
+  --bp-ink: #17221e;
+  --bp-muted: #56635e;
+  --bp-line: #dde3e0;
+  --bp-line-strong: #c3ccc8;
+  --bp-pine: #1e5b4a;
+  --bp-pine-hover: #174a3c;
+  --bp-pine-deep: #12372d;
+  --bp-pine-tint: #e4f0eb;
+  --bp-sidebar-text: #b9d3c8;
+  --bp-amber: #8a4b00;
+  --bp-amber-tint: #fdf3e3;
+  --bp-red: #b42318;
+  --bp-red-tint: #fdecea;
+  --bp-slate: #2c4f73;
+  --bp-slate-tint: #e8eff6;
+}
+
+@theme inline {
+  --color-bp-canvas: var(--bp-canvas);
+  --color-bp-surface: var(--bp-surface);
+  --color-bp-ink: var(--bp-ink);
+  --color-bp-muted: var(--bp-muted);
+  --color-bp-line: var(--bp-line);
+  --color-bp-line-strong: var(--bp-line-strong);
+  --color-bp-pine: var(--bp-pine);
+  --color-bp-pine-hover: var(--bp-pine-hover);
+  --color-bp-pine-deep: var(--bp-pine-deep);
+  --color-bp-pine-tint: var(--bp-pine-tint);
+  --color-bp-sidebar-text: var(--bp-sidebar-text);
+  --color-bp-amber: var(--bp-amber);
+  --color-bp-amber-tint: var(--bp-amber-tint);
+  --color-bp-red: var(--bp-red);
+  --color-bp-red-tint: var(--bp-red-tint);
+  --color-bp-slate: var(--bp-slate);
+  --color-bp-slate-tint: var(--bp-slate-tint);
+  --font-plex: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
 @theme inline {
   --color-canvas: var(--sw-canvas);
   --color-ink: var(--sw-ink);

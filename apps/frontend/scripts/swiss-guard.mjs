@@ -12,7 +12,15 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const SCAN_DIRS = ['app', 'components'];
-export const EXCLUDED_PREFIXES = ['components/resume/', 'app/print/'];
+// The BenchPilot workspace (/bench, /login) has its own design system (bp-* tokens).
+export const EXCLUDED_PREFIXES = [
+  'components/resume/',
+  'app/print/',
+  'components/workspace/',
+  'app/(workspace)/',
+  'app/login/',
+  'components/auth/',
+];
 export const ALLOWLIST_PATH = 'tests/swiss-guard.allowlist.json';
 
 const PALETTE =

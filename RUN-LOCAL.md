@@ -1,7 +1,7 @@
 # How to run BenchPilot on your computer
 
 BenchPilot is the `bench` branch of this repo: Resume Matcher plus a staffing
-bench (consultants, requirements, submissions). What it does: [BENCH.md](BENCH.md).
+bench workspace, BenchPilot (candidates, requirements, pipeline). What it does: [BENCH.md](BENCH.md).
 
 ## 1. Install the prerequisites (one time)
 
@@ -72,14 +72,15 @@ Then open <http://localhost:3000/bench> in your browser.
 2. Pick **Groq** as the provider and paste your key (free from
    console.groq.com → API Keys).
 3. Set the model to **`openai/gpt-oss-120b`** and click **Test connection**.
-4. Go to **Bench**:
-   - **Consultants:** add a consultant and upload their resume.
+4. Go to <http://localhost:3000/bench>:
+   - **Candidates:** add a candidate, open their profile, upload their resume.
    - **Requirements:** add a requirement by pasting the job description.
-   - **Submit:** pick a match and submit them.
+   - Open the requirement and **Submit** one of the best matches.
+   - Track it on the **Pipeline** board; **Today** shows what needs you.
 
 Groq's free plan allows about 1,000 requests a day, which is a few dozen
 tailored resumes. If you hit the limit, a submission shows *Tailoring failed*;
-click **Retry** the next day. For real consultant resumes, consider Ollama
+click **Try again** (on Today) the next day. For real consultant resumes, consider Ollama
 (runs fully on your machine) or a paid key: see the notes in BENCH.md.
 
 ## Next time
